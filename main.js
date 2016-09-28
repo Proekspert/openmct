@@ -103,6 +103,7 @@ define([
     './platform/status/bundle',
     './platform/commonUI/regions/bundle',
     './smart-cabin/telemetry/bundle',
+    './smart-cabin/events-panel/bundle',
 ], function (Main, legacyRegistry) {
     return {
         legacyRegistry: legacyRegistry,
