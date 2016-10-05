@@ -32,7 +32,30 @@ define([
                     "glyph": "2",
                     "name": "List",
                     "templateUrl": "templates/view.html",
-                    "editable": true
+                    "editable": true,
+                    "toolbar": {
+                        "sections": [
+                            {
+                                "items": [
+                                    {
+                                        "text": "Add Task",
+                                        "glyph": "+",
+                                        "method": "addTask",
+                                        "control": "button"
+                                    }
+                                ]
+                            },
+                            {
+                                "items": [
+                                    {
+                                        "glyph": "Z",
+                                        "method": "removeTask",
+                                        "control": "button"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
                 }
             ],
             "controllers": [

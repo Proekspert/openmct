@@ -4,12 +4,7 @@ define(
     function () {
         "use strict";
 
-        var PREFIX = "example_tlm:",
-            FORMAT_MAPPINGS = {
-                float: "number",
-                integer: "number",
-                string: "string"
-            };
+        var PREFIX = "cabin_tlm:";
 
         function CabinTelemetryModelProvider(adapter, $q) {
             var modelPromise, empty = $q.when({});
@@ -20,45 +15,41 @@ define(
             }
 
             // Build a domain object identifier by adding a prefix
-            function makeId(element) {
-                return PREFIX + element.identifier;
+            function makeId(key) {
+                return PREFIX + key;
             }
 
             // Create domain object models from this dictionary
             function buildTaxonomy(dictionary) {
                 var models = {};
 
-                // Create & store a domain object model for a measurement
-                function addMeasurement(measurement) {
-                    var format = FORMAT_MAPPINGS[measurement.type];
-                    models[makeId(measurement)] = {
-                        type: "example.measurement",
-                        name: measurement.name,
+                models[makeId("sensors")] = {
+                    type: "smartcabin.subsystem",
+                    name: "Sensors",
+                    composition: []
+                };
+
+                // Create & store a domain object model for a subsystem
+                function addMeasurement(prop, value) {
+                    models[makeId(prop)] = {
+                        type: "smartcabin.measurement",
+                        name: prop.toUpperCase(),
                         telemetry: {
-                            key: measurement.identifier,
+                            key: prop,
                             ranges: [{
                                 key: "value",
                                 name: "Value",
-                                units: measurement.units,
-                                format: format
+                                units: "degrees",
+                                format: "number"
                             }]
                         }
                     };
                 }
 
-                // Create & store a domain object model for a subsystem
-                function addSubsystem(subsystem) {
-                    var measurements =
-                        (subsystem.measurements || []);
-                    models[makeId(subsystem)] = {
-                        type: "example.subsystem",
-                        name: subsystem.name,
-                        composition: measurements.map(makeId)
-                    };
-                    measurements.forEach(addMeasurement);
+                for(var prop in dictionary.content) {
+                    models[makeId("sensors")].composition.push(makeId(prop));
+                    addMeasurement(prop, dictionary.content[prop]);
                 }
-
-                (dictionary.subsystems || []).forEach(addSubsystem);
 
                 return models;
             }

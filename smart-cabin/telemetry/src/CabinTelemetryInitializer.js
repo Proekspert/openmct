@@ -4,15 +4,10 @@ define(
     function () {
         "use strict";
 
-        var TAXONOMY_ID = "example:sc",
-            PREFIX = "example_tlm:";
+        var TAXONOMY_ID = "smartcabin",
+            PREFIX = "cabin_tlm:";
 
         function CabinTelemetryInitializer(adapter, objectService) {
-            // Generate a domain object identifier for a dictionary element
-            function makeId(element) {
-                return PREFIX + element.identifier;
-            }
-
             // When the dictionary is available, add all subsystems
             // to the composition of My Spacecraft
             function initializeTaxonomy(dictionary) {
@@ -21,21 +16,19 @@ define(
                 function getTaxonomyObject(domainObjects) {
                     return domainObjects[TAXONOMY_ID];
                 }
-
+                
                 // Populate
                 function populateModel(taxonomyObject) {
                     return taxonomyObject.useCapability(
                         "mutation",
                         function (model) {
-                            model.name =
-                                dictionary.name;
-                            model.composition =
-                                dictionary.subsystems.map(makeId);
+                            model.name = dictionary.thing;
+                            model.composition = [PREFIX + "sensors"];
                         }
                     );
                 }
 
-                // Look up My Spacecraft, and populate it accordingly.
+                // Look up My Cabin, and populate it accordingly.
                 objectService.getObjects([TAXONOMY_ID])
                     .then(getTaxonomyObject)
                     .then(populateModel);

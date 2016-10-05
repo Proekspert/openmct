@@ -5,7 +5,7 @@ define(
     function (CabinTelemetrySeries) {
         "use strict";
 
-        var SOURCE = "example.source";
+        var SOURCE = "smartcabin.source";
 
         function CabinTelemetryProvider(adapter, $q) {
             var subscribers = {};
@@ -20,9 +20,10 @@ define(
             adapter.listen(function (message) {
                 var packaged = {};
                 packaged[SOURCE] = {};
-                packaged[SOURCE][message.id] =
-                    new CabinTelemetrySeries([message.value]);
-                (subscribers[message.id] || []).forEach(function (cb) {
+                packaged[SOURCE]["temperature"] =
+                    new CabinTelemetrySeries([message]);
+                (subscribers["temperature"] || []).forEach(function (cb) {
+                    console.log(packaged)
                     cb(packaged);
                 });
             });
@@ -33,15 +34,16 @@ define(
                         relevantReqs = requests.filter(matchesSource);
 
                     // Package historical telemetry that has been received
-                    function addToPackage(history) {
-                        packaged[SOURCE][history.id] =
-                            new CabinTelemetrySeries(history.value);
+                    function addToPackage(measurement) {
+                        packaged[SOURCE]["temperature"] =
+                            new CabinTelemetrySeries(measurement);
                     }
 
                     // Retrieve telemetry for a specific measurement
                     function handleRequest(request) {
+                        console.log("Retrieve telemetry for a specific measurement", request.key);
                         var key = request.key;
-                        return adapter.history(key).then(addToPackage);
+                        return adapter.dictionary().then(addToPackage);
                     }
 
                     packaged[SOURCE] = {};
@@ -59,14 +61,10 @@ define(
                    function unsubscribe(key) {
                        subscribers[key] =
                            (subscribers[key] || []).filter(notCallback);
-                       if (subscribers[key].length < 1) {
-                           adapter.unsubscribe(key);
-                       }
                    }
 
                    keys.forEach(function (key) {
                        subscribers[key] = subscribers[key] || [];
-                       adapter.subscribe(key);
                        subscribers[key].push(callback);
                    });
 

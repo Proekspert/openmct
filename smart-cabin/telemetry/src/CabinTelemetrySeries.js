@@ -10,10 +10,10 @@ define(
                     return data.length;
                 },
                 getDomainValue: function (index) {
-                    return (data[index] || {}).timestamp;
+                    return data[index].created;
                 },
                 getRangeValue: function (index) {
-                    return (data[index] || {}).value;
+                    return (data[index] || {}).content.temperature;
                 }
             };
         }

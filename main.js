@@ -36,7 +36,8 @@ requirejs.config({
         "screenfull": "bower_components/screenfull/dist/screenfull.min",
         "text": "bower_components/text/text",
         "uuid": "bower_components/node-uuid/uuid",
-        "zepto": "bower_components/zepto/zepto.min"
+        "zepto": "bower_components/zepto/zepto.min",
+        "dweetio": "smart-cabin/telemetry/src/dweet.io"
     },
     "shim": {
         "angular": {
@@ -59,6 +60,9 @@ requirejs.config({
         },
         "zepto": {
             "exports": "Zepto"
+        },
+        "dweetio": {
+            "exports": "dweetio"
         }
     }
 });
