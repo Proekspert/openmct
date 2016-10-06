@@ -8,6 +8,10 @@ define(
             PREFIX = "cabin_tlm:";
 
         function CabinTelemetryInitializer(adapter, objectService) {
+            function makeId(element) {
+                return PREFIX + element.identifier;
+            }
+
             // When the dictionary is available, add all subsystems
             // to the composition of My Spacecraft
             function initializeTaxonomy(dictionary) {
@@ -22,19 +26,16 @@ define(
                     return taxonomyObject.useCapability(
                         "mutation",
                         function (model) {
-                            model.name = dictionary.thing;
-                            model.composition = [PREFIX + "sensors"];
+                            model.name = dictionary.name;
+                            model.composition = dictionary.instruments.map(makeId);
                         }
                     );
                 }
-
-                // Look up My Cabin, and populate it accordingly.
                 objectService.getObjects([TAXONOMY_ID])
                     .then(getTaxonomyObject)
                     .then(populateModel);
             }
-
-            adapter.dictionary().then(initializeTaxonomy);
+            initializeTaxonomy(adapter.dictionary);
         }
 
         return CabinTelemetryInitializer;

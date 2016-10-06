@@ -2,12 +2,14 @@ define([
     'legacyRegistry',
     './src/CabinTelemetryServerAdapter',
     './src/CabinTelemetryDweetAdapter',
+    './src/CabinTelemetryAblyAdapter',
     './src/CabinTelemetryInitializer',
     './src/CabinTelemetryModelProvider'
 ], function (
     legacyRegistry,
     CabinTelemetryServerAdapter,
     CabinTelemetryDweetAdapter,
+    CabinTelemetryAblyAdapter,
     CabinTelemetryInitializer,
     CabinTelemetryModelProvider
 ) {
@@ -21,8 +23,8 @@ define([
                     "glyph": "o"
                 },
                 {
-                    "name": "Subsystem",
-                    "key": "smartcabin.subsystem",
+                    "name": "Instrument",
+                    "key": "smartcabin.instrument",
                     "glyph": "o",
                     "model": { "composition": [] }
                 },
@@ -63,6 +65,11 @@ define([
                     "key": "smartcabin.dweet-adapter",
                     "implementation": CabinTelemetryDweetAdapter,
                     "depends": [ "$q", "THING_NAME" ]
+                },
+                {
+                    "key": "smartcabin.ably-adapter",
+                    "implementation": CabinTelemetryAblyAdapter,
+                    "depends": [ "$q", "ABLY_API_KEY", "CHANNEL_NAME" ]
                 }
             ],
             "constants": [
@@ -72,15 +79,20 @@ define([
                     "value": "ws://localhost:8081"
                 },
                 {
-                    "key": "THING_NAME",
+                    "key": "ABLY_API_KEY",
                     "priority": "fallback",
-                    "value": "CC3200-smart-cabin-demo"
+                    "value": "uOIC-g.X3FDfQ:7SMkzSxyYVydbqTq"
+                },
+                {
+                    "key": "CHANNEL_NAME",
+                    "priority": "fallback",
+                    "value": "cabin"
                 }
             ],
             "runs": [
                 {
                     "implementation": CabinTelemetryInitializer,
-                    "depends": [ "smartcabin.dweet-adapter", "objectService" ]
+                    "depends": [ "smartcabin.ably-adapter", "objectService" ]
                 }
             ],
             "components": [
@@ -88,13 +100,13 @@ define([
                     "provides": "modelService",
                     "type": "provider",
                     "implementation": CabinTelemetryModelProvider,
-                    "depends": [ "smartcabin.dweet-adapter", "$q" ]
+                    "depends": [ "smartcabin.ably-adapter", "$q" ]
                 },
                 {
                     "provides": "telemetryService",
                     "type": "provider",
                     "implementation": "CabinTelemetryProvider.js",
-                    "depends": [ "smartcabin.dweet-adapter", "$q" ]
+                    "depends": [ "smartcabin.ably-adapter", "$q" ]
                 }
             ]
         }

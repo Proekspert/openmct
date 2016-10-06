@@ -15,8 +15,8 @@ define(
             }
 
             // Build a domain object identifier by adding a prefix
-            function makeId(key) {
-                return PREFIX + key;
+            function makeId(element) {
+                return PREFIX + element.identifier;
             }
 
             // Create domain object models from this dictionary
@@ -30,38 +30,45 @@ define(
                 };
 
                 // Create & store a domain object model for a subsystem
-                function addMeasurement(prop, value) {
-                    models[makeId(prop)] = {
+                function addMeasurement(measurement){
+                    models[makeId(measurement)] = {
                         type: "smartcabin.measurement",
-                        name: prop.toUpperCase(),
+                        name: measurement.name,
                         telemetry: {
-                            key: prop,
+                            key: measurement.identifier,
                             ranges: [{
                                 key: "value",
-                                name: "Value",
-                                units: "degrees",
+                                name: measurement.units,
+                                units: measurement.units,
                                 format: "number"
                             }]
                         }
                     };
                 }
 
-                for(var prop in dictionary.content) {
-                    models[makeId("sensors")].composition.push(makeId(prop));
-                    addMeasurement(prop, dictionary.content[prop]);
+                function addInstrument(subsystem, spacecraftId) {
+                    var measurements = (subsystem.measurements || []),
+                        instrumentId = makeId(subsystem);
+
+                    models[instrumentId] = {
+                        type: "smartcabin.instrument",
+                        name: subsystem.name,
+                        composition: measurements.map(makeId)
+                    };
+                    measurements.forEach(function(measurement) {
+                        addMeasurement(measurement, instrumentId);
+                    });
                 }
 
+                (dictionary.instruments || []).forEach(function(instrument) {
+                    addInstrument(instrument);
+                });
                 return models;
             }
 
-            // Begin generating models once the dictionary is available
-            modelPromise = adapter.dictionary().then(buildTaxonomy);
-
             return {
                 getModels: function (ids) {
-                    // Return models for the dictionary only when they
-                    // are relevant to the request.
-                    return ids.some(isRelevant) ? modelPromise : empty;
+                    return ids.some(isRelevant) ? buildTaxonomy(adapter.dictionary) : {};
                 }
             };
         }

@@ -18,14 +18,16 @@ define(
 
             // Listen for data, notify subscribers
             adapter.listen(function (message) {
+                console.log(message)
                 var packaged = {};
                 packaged[SOURCE] = {};
-                packaged[SOURCE]["temperature"] =
-                    new CabinTelemetrySeries([message]);
-                (subscribers["temperature"] || []).forEach(function (cb) {
-                    console.log(packaged)
-                    cb(packaged);
-                });
+
+                for(var prop in message.data) {
+                    packaged[SOURCE][prop] = new CabinTelemetrySeries([message], prop);
+                    (subscribers[prop] || []).forEach(function (cb) {
+                        cb(packaged);
+                    });
+                }
             });
 
             return {
@@ -34,16 +36,15 @@ define(
                         relevantReqs = requests.filter(matchesSource);
 
                     // Package historical telemetry that has been received
-                    function addToPackage(measurement) {
-                        packaged[SOURCE]["temperature"] =
-                            new CabinTelemetrySeries(measurement);
+                    function addToPackage(payload) {
+                        packaged[SOURCE][payload.key] =
+                            new CabinTelemetrySeries(payload.data.items, payload.key);
                     }
 
                     // Retrieve telemetry for a specific measurement
                     function handleRequest(request) {
-                        console.log("Retrieve telemetry for a specific measurement", request.key);
                         var key = request.key;
-                        return adapter.dictionary().then(addToPackage);
+                        return adapter.history(key).then(addToPackage);
                     }
 
                     packaged[SOURCE] = {};
