@@ -10,12 +10,11 @@ define(
                     return data.length;
                 },
                 getDomainValue: function (index) {
-                    //var date = new Date((data[index] || {}).timestamp);
-                    //console.log(date.getHours() + ':' + date.getMinutes() + ":" + date.getSeconds());
                     return (data[index] || {}).timestamp;
                 },
                 getRangeValue: function (index) {
-                    return (data[index] || {}).data[prop];
+                    var result = (data[index] || {}).data;
+                    return result[prop];
                 }
             };
         }

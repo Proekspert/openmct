@@ -30,7 +30,7 @@ define(
                 };
 
                 // Create & store a domain object model for a subsystem
-                function addMeasurement(measurement){
+                function addMeasurement(measurement) {
                     models[makeId(measurement)] = {
                         type: "smartcabin.measurement",
                         name: measurement.name,
@@ -46,7 +46,7 @@ define(
                     };
                 }
 
-                function addInstrument(subsystem, spacecraftId) {
+                function addInstrument(subsystem) {
                     var measurements = (subsystem.measurements || []),
                         instrumentId = makeId(subsystem);
 

@@ -10,6 +10,8 @@ define(
 
         function CabinTelemetryAblyAdapter($q, apiKey, channelName) {
             this.listeners = [];
+            this.cache = undefined;
+            this.$q = $q;
             this.deferred = $q.defer();
             var self = this;
 
@@ -25,10 +27,19 @@ define(
 
         CabinTelemetryAblyAdapter.prototype.requestHistory = function(id) {
             var self = this;
-            this.channel.history({ direction: "forwards" }, function(err, resultPage) {
-                self.deferred.resolve({ key: id, data: resultPage });
-            });
-            return this.deferred.promise;
+            return this.cache
+                ? this.$q.when({ key: id, data: this.cache })
+                : this.$q(function(resolve, reject){    
+                    self.channel.history({ direction: "forwards" }, function(err, resultPage) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            var result = { key: id, data: resultPage }; 
+                            self.cache = resultPage;
+                            resolve(result);
+                        }
+                    });
+            }); 
         }
 
         CabinTelemetryAblyAdapter.prototype.listen = function(callback) {

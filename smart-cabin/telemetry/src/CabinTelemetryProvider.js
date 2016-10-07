@@ -37,6 +37,7 @@ define(
 
                     // Package historical telemetry that has been received
                     function addToPackage(payload) {
+                        console.log('from history', payload)
                         packaged[SOURCE][payload.key] =
                             new CabinTelemetrySeries(payload.data.items, payload.key);
                     }
