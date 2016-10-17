@@ -4,7 +4,7 @@ define(
     [],
     function () {
         return {
-            "name": "Smart Cabin CC3200 Launchpad",
+            "name": "CC3200 Launchpad",
             "identifier": "smartcabin",
             "instruments": [
                 {
@@ -24,19 +24,19 @@ define(
                     "identifier":"accelerometer",
                     "measurements": [
                         {
-                            "name": "X",
+                            "name": "Accelerometer (X)",
                             "identifier": "accelerometer.x",
                             "units": "",
                             "type": "int"
                         },
                         {
-                            "name": "Y",
+                            "name": "Accelerometer (Y)",
                             "identifier": "accelerometer.y",
                             "units": "",
                             "type": "int"
                         },
                         {
-                            "name": "Z",
+                            "name": "Accelerometer (Z)",
                             "identifier": "accelerometer.z",
                             "units": "",
                             "type": "int"

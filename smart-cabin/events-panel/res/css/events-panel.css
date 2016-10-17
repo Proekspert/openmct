@@ -1,0 +1,22 @@
+.smartcabin-events-container {
+    overflow-y: visible;  
+    padding: 10px;
+}
+
+.smartcabin-events-container .event {
+    font-size: 12px;
+    font-family: courier;
+    color: green;
+}
+
+.smartcabin-events-container .event-time {
+    color: #0fba06;
+}
+
+.smartcabin-events-container .event-description {
+
+}
+
+.smartcabin-events-container .event-severity {
+
+}

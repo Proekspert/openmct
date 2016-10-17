@@ -12,57 +12,35 @@ define([
         {
           "types": [
                 {
-                    "key": "sc.events-panel",
+                    "key": "smartcabin.events-panel",
                     "name": "Smart Cabin Events Panel",
                     "glyph": "2",
                     "description": "",
                     "features": ["creation"],
                     "model": {
-                        "tasks": [
-                            { "description": "Add a type", "completed": true },
-                            { "description": "Add a view" }
-                        ]
+                        "events": []
                     }
                 }
           ],
            "views": [
                 {
-                    "key": "sc.events-panel",
-                    "type": "sc.events-panel",
+                    "key": "smartcabin.events-panel",
+                    "type": "smartcabin.events-panel",
                     "glyph": "2",
                     "name": "List",
                     "templateUrl": "templates/view.html",
-                    "editable": true,
-                    "toolbar": {
-                        "sections": [
-                            {
-                                "items": [
-                                    {
-                                        "text": "Add Task",
-                                        "glyph": "+",
-                                        "method": "addTask",
-                                        "control": "button"
-                                    }
-                                ]
-                            },
-                            {
-                                "items": [
-                                    {
-                                        "glyph": "Z",
-                                        "method": "removeTask",
-                                        "control": "button"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
                 }
             ],
             "controllers": [
                 {
                     "key": "EventsController",
                     "implementation": EventsController,
-                    "depends": [ "$scope" ]
+                    "depends": [ "$scope", "objectService", "telemetryHandler" ]
+                }
+            ],
+            "stylesheets": [
+                {
+                    "stylesheetUrl": "css/events-panel.css"
                 }
             ]
         }

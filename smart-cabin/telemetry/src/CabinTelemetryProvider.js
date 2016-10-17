@@ -18,7 +18,6 @@ define(
 
             // Listen for data, notify subscribers
             adapter.listen(function (message) {
-                console.log(message)
                 var packaged = {};
                 packaged[SOURCE] = {};
 
@@ -37,7 +36,6 @@ define(
 
                     // Package historical telemetry that has been received
                     function addToPackage(payload) {
-                        console.log('from history', payload)
                         packaged[SOURCE][payload.key] =
                             new CabinTelemetrySeries(payload.data.items, payload.key);
                     }
