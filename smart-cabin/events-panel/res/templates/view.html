@@ -1,0 +1,9 @@
+<div ng-controller="EventsController">
+    <div class="smartcabin-events-container">
+        <div class="event" ng-repeat="event in model.events">
+            <span class="event-time">{{ event.time }}</span>
+            <span class="event-description">{{ event.description }}</span>
+            <span class="event-severity"></span>
+        </div>
+    </div>
+</div>
